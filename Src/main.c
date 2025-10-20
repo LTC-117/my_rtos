@@ -20,6 +20,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "led.h"
+#include "stm32f1xx_hal.h"
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -44,8 +46,13 @@ int main(void)
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
 
+    /* Initialize the Embedded LED */
+    led_init();
+
     /* Infinite loop */
     while (1) {
+        led_toggle();
+        HAL_Delay(1000);
     }
 }
 
@@ -65,8 +72,7 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
     RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-    {
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         Error_Handler();
     }
 
@@ -79,8 +85,7 @@ void SystemClock_Config(void)
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-    {
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
         Error_Handler();
     }
 }
