@@ -47,8 +47,9 @@ int main(void)
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
 
-    /* Initialize the Embedded LED */
+    /* Initialize the OS modules */
     led_init();
+    usart_tx_rx_init(USART1, 115200);
 
     /* Infinite loop */
     while (1) {
