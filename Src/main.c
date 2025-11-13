@@ -49,12 +49,14 @@ int main(void)
 
     /* Initialize the OS modules */
     led_init();
-    usart_tx_rx_init(USART1, 115200);
+
+    USART_HandleTypeDef huart = usart_tx_rx_init(USART1, 115200);
 
     /* Infinite loop */
     while (1) {
         led_toggle();
         HAL_Delay(1000);
+        usart_write(&huart, "Hello, World!\n\r");
     }
 }
 
@@ -102,6 +104,7 @@ static void MX_GPIO_Init(void)
 {
     /* GPIO Ports Clock Enable */
     __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
 }
 
