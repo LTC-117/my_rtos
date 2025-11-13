@@ -1,19 +1,12 @@
-#include "usart_driver.h"
-
 #include "main.h"
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx_hal_usart.h"
 #include "stm32f1xx_hal_gpio.h"
 #include "stm32f103xb.h"
-
 #include <stdint.h>
+#include "mystring.h"
 
-
-/* USART1_CK -> PA8*/
-/* USART1_TX -> PA9 */
-/* USART1_RX -> PA10 */
-/* USART1_CTS -> PA11 */
-/* USART1_RTS -> PA12 */
+#include "usart_driver.h"
 
 
 USART_HandleTypeDef usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
@@ -89,10 +82,12 @@ USART_HandleTypeDef usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_
     if (HAL_USART_Init(&husart) != HAL_OK) {
         Error_Handler();
     }
+
+    return husart;
 }
 
 
-void usart_write(void)
+void usart_write(USART_HandleTypeDef *husart, char *message)
 {
-
+    HAL_USART_Transmit(husart, (uint8_t *)message, mystrlen(message), HAL_MAX_DELAY);
 }
