@@ -1,5 +1,6 @@
 #include "usart_driver.h"
 
+#include "main.h"
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx_hal_usart.h"
 #include "stm32f1xx_hal_gpio.h"
@@ -15,21 +16,12 @@
 /* USART1_RTS -> PA12 */
 
 
-#define SYS_FREQ        16000000
-#define USART_BR        115200
-
-
-static uint32_t usart_compute_baudrate(uint32_t periph_clk, uint32_t baudrate)
-{
-    return (periph_clk + (baudrate / 2U)) / baudrate;
-}
-
 /* 
  * TODO: Implement the function in a way we can init completely any of the 3
  * USART F103 modules (not including the UART one yet).
  */
 
-void usart_tx_rx_init(void)
+void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
 {
     /* ---------- Initializing GPIO pins ---------- */
     // Init tx pin (PA9)
@@ -57,7 +49,7 @@ void usart_tx_rx_init(void)
 
     // USART1 Handle
     USART_InitTypeDef usart_driver = {
-        .BaudRate = 115200,
+        .BaudRate = baud_rate,
         .WordLength = USART_WORDLENGTH_8B,
         .StopBits = USART_STOPBITS_1,
         .Parity = USART_PARITY_NONE,
@@ -65,9 +57,11 @@ void usart_tx_rx_init(void)
     };
 
     USART_HandleTypeDef usart1 = {
-        .Instance = USART1,
+        .Instance = usart_module,
         .Init = usart_driver,
     };
 
-    HAL_USART_Init(&usart1);
+    if (HAL_USART_Init(&usart1) != HAL_OK) {
+        Error_Handler();
+    }
 }
