@@ -24,9 +24,28 @@
 void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
 {
     /* ---------- Initializing GPIO pins ---------- */
+
+    uint32_t usart_tx_pin =
+        (usart_module == USART1)
+        ? GPIO_PIN_9  :
+        (usart_module == USART2)
+        ? GPIO_PIN_2  :
+        (usart_module == USART3) // USART3 uses GPIOB, not GPIOA like 1 and 2.
+        ? GPIO_PIN_10 :
+        0;
+
+    uint32_t usart_rx_pin =
+        (usart_module == USART1)
+        ? GPIO_PIN_10 :
+        (usart_module == USART2)
+        ? GPIO_PIN_3  :
+        (usart_module == USART3) // USART3 uses GPIOB, not GPIOA like 1 and 2.
+        ? GPIO_PIN_11 :
+        0;
+
     // Init tx pin (PA9)
     GPIO_InitTypeDef usart1_tx = {
-        .Pin = GPIO_PIN_9,
+        .Pin = usart_tx_pin,
         .Mode = GPIO_MODE_AF_PP,
         .Pull = GPIO_NOPULL,
         .Speed = GPIO_SPEED_FREQ_MEDIUM
@@ -34,7 +53,7 @@ void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
 
     // Init rx pin (PA10)
     GPIO_InitTypeDef usart1_rx = {
-        .Pin = GPIO_PIN_10,
+        .Pin = usart_rx_pin,
         .Mode = GPIO_MODE_AF_INPUT,
         .Pull = GPIO_NOPULL,
         .Speed = GPIO_SPEED_FREQ_MEDIUM
