@@ -16,11 +16,6 @@
 /* USART1_RTS -> PA12 */
 
 
-/* 
- * TODO: Implement the function in a way we can init completely any of the 3
- * USART F103 modules (not including the UART one yet).
- */
-
 void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
 {
     /* ---------- Initializing GPIO pins ---------- */
