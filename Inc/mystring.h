@@ -5,5 +5,6 @@
 #include <stddef.h>
 
 uint32_t mystrlen(char *str);
+int myatoi(char c);
 
 #endif
