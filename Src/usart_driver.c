@@ -16,8 +16,14 @@
 /* USART1_RTS -> PA12 */
 
 
-void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
+USART_HandleTypeDef usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
 {
+    if (usart_module != USART1 &&
+        usart_module != USART2 &&
+        usart_module != USART3) {
+            Error_Handler();
+    }
+
     /* ---------- Initializing GPIO pins ---------- */
 
     uint32_t usart_tx_pin =
@@ -39,7 +45,7 @@ void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
         0;
 
     // Init tx pin (PA9)
-    GPIO_InitTypeDef usart1_tx = {
+    GPIO_InitTypeDef usart_tx = {
         .Pin = usart_tx_pin,
         .Mode = GPIO_MODE_AF_PP,
         .Pull = GPIO_NOPULL,
@@ -47,15 +53,20 @@ void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
     };
 
     // Init rx pin (PA10)
-    GPIO_InitTypeDef usart1_rx = {
+    GPIO_InitTypeDef usart_rx = {
         .Pin = usart_rx_pin,
         .Mode = GPIO_MODE_AF_INPUT,
         .Pull = GPIO_NOPULL,
         .Speed = GPIO_SPEED_FREQ_MEDIUM
     };
 
-    HAL_GPIO_Init(GPIOA, &usart1_tx);
-    HAL_GPIO_Init(GPIOA, &usart1_rx);
+    if (usart_module == USART1 || usart_module == USART2) {
+        HAL_GPIO_Init(GPIOA, &usart_tx);
+        HAL_GPIO_Init(GPIOA, &usart_rx);
+    } else {
+        HAL_GPIO_Init(GPIOB, &usart_tx);
+        HAL_GPIO_Init(GPIOB, &usart_rx);
+    }
 
     __HAL_RCC_USART1_CLK_ENABLE();
 
@@ -70,12 +81,18 @@ void usart_tx_rx_init(USART_TypeDef *usart_module, uint32_t baud_rate)
         .Mode = USART_MODE_TX_RX,
     };
 
-    USART_HandleTypeDef usart1 = {
+    USART_HandleTypeDef husart = {
         .Instance = usart_module,
         .Init = usart_driver,
     };
 
-    if (HAL_USART_Init(&usart1) != HAL_OK) {
+    if (HAL_USART_Init(&husart) != HAL_OK) {
         Error_Handler();
     }
+}
+
+
+void usart_write(void)
+{
+
 }
