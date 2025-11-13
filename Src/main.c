@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "led_driver.h"
+#include "usart_driver.h"
 #include "stm32f1xx_hal.h"
 
 
